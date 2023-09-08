@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+    <head>
+        {% if title %}
+        <title>{{ title }} - The Best Rap</title>
+        {% else %}
+        <title>Welcome to "BRA" (The Best Rap Artists) </title>
+        {% endif %}
+    </head>
+    <body>
+        <div>
+            BRA:
+            <a href="{{ url_for('index') }}">Home</a>
+            <a href="{{ url_for('artists') }}">Artists</a>
+            <a href="{{ url_for('new_artists') }}">New Artists</a>
+        </div>
+        {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+
+    </body>
+</html>
