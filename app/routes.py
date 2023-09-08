@@ -11,7 +11,8 @@ def index():
 
 @app.route('/artists')
 def artists():
-    return render_template('artists.html', title='Artists')
+    artists = ['Gunna', "Lil Baby", "Travis Scott", "SSGKOBE", "Future", "Kodak Black"]
+    return render_template('artists.html', title='Artists', artists=artists)
 
 
 @app.route('/new_artists')

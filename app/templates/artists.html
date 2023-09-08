@@ -2,11 +2,10 @@
 
 {% block content %}
         <h1>List of the Best Rap Artists</h1>
-    <li>
-        <ul><a href="{{ url_for('desc') }}">Gunna</a></ul>
-        <ul><a href="{{ url_for('desc') }}">Lil Baby</a></ul>
-        <ul><a href="{{ url_for('desc') }}">Drake</a></ul>
-        <ul><a href="{{ url_for('desc') }}">Kodak Black</a></ul>
-        <ul><a href="{{ url_for('desc') }}">Travis Scott</a></ul>
-    </li>
+    <ul>
+
+        {% for artist in artists %}
+            <li><a href="{{ url_for('desc') }}">{{ artist }}</a></li>
+        {% endfor %}
+    </ul>
 {% endblock %}
