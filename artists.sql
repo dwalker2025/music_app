@@ -7,13 +7,11 @@ create table Artist (
 
 create table Venue (
     id      integer primary key autoincrement,
-    capacity    integer not null,
     city    varchar(64),
     state   varchar(64),
     address varchar(150),
-    eventID integer not null,
-        foreign key (eventID) references Event(id)
-)
+    capacity integer not null
+);
 
 create table Event (
  id	        integer primary key autoincrement,
