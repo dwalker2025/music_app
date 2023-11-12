@@ -1,30 +1,10 @@
 {% extends "base.html" %}
-
-{% block content %}
-    <h1>New Event Form:</h1>
-    <form action="" method="post" novalidate>
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.eventName.label }}<br>
-            {{ form.eventName(size=32) }}<br>
-            {% for error in form.eventName.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.startTime.label }}<br>
-            {{ form.startTime(size=32) }}<br>
-            {% for error in form.startTime.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.select_field.label }}<br>
-            {{ form.select_field(size=100) }}<br>
-            {% for error in form.select_field.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>{{ form.submit() }}</p>
-    </form>
+{% import 'bootstrap/wtf.html' as wtf %}
+{% block app_content %}
+    <h1>Create New Event</h1>
+    <div class="row">
+    <div class="col-md-4">
+        {{ wtf.quick_form(form) }}
+    </div>
+    </div>
 {% endblock %}

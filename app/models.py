@@ -1,18 +1,18 @@
 from datetime import datetime
-
-from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import Table, Column, Integer, String, MetaData, create_engine
+from werkzeug.security import generate_password_hash, check_password_hash
+from app import db
+from flask_login import UserMixin
+from app import login
+
+db = SQLAlchemy()
 from wtforms import ValidationError
 
 import music_app
 from app import db, login
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
-
-# app = Flask(music_app)
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///music_db'
-# db = SQLAlchemy(app)
-
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -37,6 +37,7 @@ class User(UserMixin, db.Model):
         if len(password.data) < 8:
             raise ValidationError('Password is too short.')
 
+
 @login.user_loader
 def load_user(id):
     return User.query.get(int(id))
@@ -47,17 +48,21 @@ class Artist(db.Model):
     artistName = db.Column(db.String(100), nullable=False)
     hometown = db.Column(db.String(300), nullable=False)
     bio = db.Column(db.String(1000), nullable=False)
-    events = db.relationship('Event', secondary='artist_to_event', back_populates='artists')
+    events = db.relationship('Event', secondary='artist_event_association', back_populates='artists')
+
+    def __repr__(self):
+        return '<User {}>'.format(self.username)
 
 
 class Venue(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     venueName = db.Column(db.String(100), nullable=False)
-    city = db.Column(db.String(100), nullable=False)
-    state = db.Column(db.String(100), nullable=False)
     address = db.Column(db.String(100), nullable=False)
     capacity = db.Column(db.Integer, nullable=False)
     events = db.relationship('Event', back_populates='venue')
+
+    def __repr__(self):
+        return '<User {}>'.format(self.username)
 
 
 class Event(db.Model):
@@ -66,10 +71,13 @@ class Event(db.Model):
     time = db.Column(db.DateTime, nullable=False)
     venue_id = db.Column(db.Integer, db.ForeignKey('venue.id'))
     venue = db.relationship('Venue', back_populates='events')
-    artists = db.relationship('Artist', secondary='artist_to_event', back_populates='events')
+    artists = db.relationship('Artist', secondary='artist_event_association', back_populates='events')
 
+    def __repr__(self):
+        return '<User {}>'.format(self.username)
 
-artist_to_event = db.Table('artist_to_event',
-                           db.Column('artist_id', db.Integer, db.ForeignKey('artist.id'), primary_key=True),
-                           db.Column('event_id', db.Integer, db.ForeignKey('event.id'), primary_key=True)
-                           )
+artist_event_association = db.Table(
+    'artist_event',
+    db.Column('artist_id', db.Integer, db.ForeignKey('artist.id')),
+    db.Column('event_id', db.Integer, db.ForeignKey('event.id'))
+)

@@ -1,33 +1,49 @@
-<!doctype html>
-<html>
-    <head>
-        {% if title %}
-        <title>{{ title }} - The Best Rap</title>
-        {% else %}
-        <title>Welcome to "BRA" (The Best Rap Artists) </title>
-        {% endif %}
-    </head>
-    <body>
-        <div>
-            BRA:
-            <a href="{{ url_for('index') }}">Home</a>
-            <a href="{{ url_for('artists') }}">Artists</a>
-            <a href="{{ url_for('new_artist') }}">New Artists</a>
-            <a href="{{ url_for('new_event') }}">New Event</a>
-            <a href="{{ url_for('new_venue') }}">New Venue</a>
-            <a href="{{ url_for('login') }}">Login</a>
+{% extends 'bootstrap/base.html' %}
+
+{% block title %}
+    {% if title %}{{ title }} - BRA{% else %}Welcome to the BRA (Best Rap Artists){% endif %}
+{% endblock %}
+
+{% block navbar %}
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">MusicApp</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav mr-auto">
+              <li class="nav-item active">
+                <a class="nav-link" href="/index">Home <span class="sr-only">(current)</span></a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/artist_list">Artists</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/reset_db">Reset Database</a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Creation Forms
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <a class="dropdown-item" href="/new_artist">Create A New Artist</a>
+                  <a class="dropdown-item" href="/new_venue">Create A New Venue</a>
+                  <a class="dropdown-item" href="/new_event">Create A New Event</a>
+                </div>
+              </li>
+            </ul>
         </div>
-        <hr>
+    </nav>
+{% endblock %}
+{% block content %}
+    <div class="container">
         {% with messages = get_flashed_messages() %}
         {% if messages %}
-        <ul>
             {% for message in messages %}
-            <li>{{ message }}</li>
+            <div class="alert alert-info" role="alert">{{ message }}</div>
             {% endfor %}
-        </ul>
-        {% endif %}
-        {% endwith %}
-        {% block content %}{% endblock %}
-
-    </body>
-</html>
+    {% endif %}
+    {% endwith %}
+    {% block app_content %}{% endblock %}
+    </div>
+{% endblock %}

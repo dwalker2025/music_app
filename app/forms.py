@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, TextAreaField, SubmitField, validators, PasswordField, BooleanField, SelectField, \
-    DateField, IntegerField
+    DateField, IntegerField, SelectMultipleField
 from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
 
 from app.models import User
@@ -15,26 +15,16 @@ class NewArtistForm(FlaskForm):
 
 class NewEventForm(FlaskForm):
     eventName = StringField('Event Name', validators=[DataRequired()])
-    startTime = DateField('Start Time', validators=[DataRequired()])
-    venues = ['25/8', "Ben's NightClub", 'LIveLife', 'FortyForty',
-              "Dawns", "the Spotlight", "the Spot19", "Venice Lights", "Jake&Allies", "Bensons"]
-    select_field = SelectField('Select a venue:', choices=venues)
+    startTime = DateField('time', format='%Y-%m-%d')
+    venue = SelectField('venue',coerce=int, validators=[DataRequired()])
+    artists = SelectMultipleField('Artists', coerce=int, choices=[], validators=[DataRequired()], render_kw={"multiple": "true"})
     submit = SubmitField('Create New Event')
 
 
 class NewVenueForm(FlaskForm):
-    venueName = StringField('Event Name', validators=[DataRequired()])
-    address = StringField('address', validators=[DataRequired()])
-    states = [
-    'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA',
-    'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD',
-    'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ',
-    'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC',
-    'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY'
-]
-    city = StringField('city', validators=[DataRequired()])
-    capacity = IntegerField('capacity', validators=[DataRequired()] )
-    select_field = SelectField('Select a state:', choices=states)
+    venueName = StringField('Venue Name', validators=[DataRequired()])
+    address = StringField('Address', validators=[DataRequired()])
+    capacity = IntegerField('Capacity', validators=[DataRequired()] )
     submit = SubmitField('Create New Venue')
 
 
@@ -62,3 +52,6 @@ class RegistrationForm(FlaskForm):
         user = User.query.filter_by(email=email.data).first()
         if user is not None:
             raise ValidationError('Please use a different email address.')
+
+class EmptyForm(FlaskForm):
+    submit = SubmitField('Submit')
