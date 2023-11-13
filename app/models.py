@@ -14,6 +14,7 @@ from app import db, login
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
+
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
@@ -47,11 +48,20 @@ class Artist(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     artistName = db.Column(db.String(100), nullable=False)
     hometown = db.Column(db.String(300), nullable=False)
-    bio = db.Column(db.String(1000), nullable=False)
+    dcpt = db.Column(db.String(1000), nullable=False)
     events = db.relationship('Event', secondary='artist_event_association', back_populates='artists')
 
+    events = db.relationship(
+        'Event',
+        secondary='artist_event_association',
+        back_populates='artists',
+        primaryjoin='Artist.id == artist_event_association.c.artist_id',
+        secondaryjoin='Event.id == artist_event_association.c.event_id',
+        lazy='dynamic'
+    )
+
     def __repr__(self):
-        return '<User {}>'.format(self.username)
+        return f'<Artist {self.artistName}>'
 
 
 class Venue(db.Model):
@@ -62,7 +72,7 @@ class Venue(db.Model):
     events = db.relationship('Event', back_populates='venue')
 
     def __repr__(self):
-        return '<User {}>'.format(self.username)
+        return '<Venue {}>'.format(self.venueName)
 
 
 class Event(db.Model):
@@ -73,11 +83,21 @@ class Event(db.Model):
     venue = db.relationship('Venue', back_populates='events')
     artists = db.relationship('Artist', secondary='artist_event_association', back_populates='events')
 
+    artists = db.relationship(
+        'Artist',
+        secondary='artist_event_association',
+        back_populates='events',
+        primaryjoin='Event.id == artist_event_association.c.event_id',
+        secondaryjoin='Artist.id == artist_event_association.c.artist_id',
+        lazy='dynamic'
+    )
+
     def __repr__(self):
-        return '<User {}>'.format(self.username)
+        return f'<Event {self.eventName}>'
+
 
 artist_event_association = db.Table(
-    'artist_event',
-    db.Column('artist_id', db.Integer, db.ForeignKey('artist.id')),
-    db.Column('event_id', db.Integer, db.ForeignKey('event.id'))
+    'artist_event_association',
+    db.Column('artist_id', db.Integer, db.ForeignKey('artist.id'), primary_key=True),
+    db.Column('event_id', db.Integer, db.ForeignKey('event.id'), primary_key=True)
 )
